@@ -1,0 +1,164 @@
+\documentclass[10pt]{beamer}
+\usepackage{etex}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+
+% AMSLaTeX packages
+\usepackage{amsthm,amsmath,amsfonts}
+\usepackage[algoruled]{algorithm2e}
+
+\usetheme{default}
+\useoutertheme{default}
+% we want to use images
+\usepackage{graphicx,movie15,hyperref,grffile}
+
+% table relates packages
+\usepackage{booktabs,multirow}
+
+\usepackage{xcolor}
+\usepackage{adjustbox}
+\usepackage{subfigure}
+%\usepackage[numbers]{natbib}
+\usepackage{natbib}
+\usepackage{todonotes}
+\presetkeys{todonotes}{inline}{}
+%\usepackage{multimedia}
+%\usepackage{bibentry}
+%\nobibliography*
+%\let\labelindent\relax
+%\usepackage{enumitem}
+\ifpdf\else
+\usepackage{pst-grad} % For gradients
+\usepackage{pst-plot}
+\usepackage{pstricks-add}
+\fi
+\usepackage[on]{auto-pst-pdf} % when switched to on, don't forget to include
+                               % the aforementioned pstricks packages.
+
+% Changes the color of bullets and other fonts to match the NormalANLBlue template
+\definecolor{anlpresentationblue}{RGB}{127 160 195}
+\setbeamercolor{structure}{fg=anlpresentationblue!150} % for slide titles, etc
+\setbeamercolor{block title}{fg=white,bg=anlpresentationblue} % For blocks
+\setbeamercolor{block body}{fg=black,bg=anlpresentationblue!20} % For blocks
+
+% Force revisiting of table of contents every time a new section is declared
+\AtBeginSection[]
+{
+   \begin{frame}
+       \frametitle{Outline}
+       \tableofcontents[currentsection]
+   \end{frame}
+}
+
+\setlength\arraycolsep{1.4pt}% some length
+\definecolor{darkgreen}{HTML}{3C8031}
+%\definecolor{darkgreen}{HTML}{2D2F92}
+%\definecolor{darkgreen}{HTML}{F58137}
+
+%gets rid of navigation symbols
+\setbeamertemplate{navigation symbols}{}
+
+%gets rid of bottom navigation bars
+\setbeamertemplate{footline}[page number]{}
+\setbeamertemplate{headline}{}
+
+%\usepackage{cmbright} % A font that I like
+%\usepackage[T1]{fontenc}
+
+\renewcommand{\seriesdefault}{sb} % Changes the font to semibold
+
+\usebackgroundtemplate{\includegraphics[width=\paperwidth]{NormalANLBlue}}
+
+\title[]{Asynchronous Two-Level Checkpointing for Large-Scale Adjoints in the
+Spectral-Element Solver Nek5000}
+\author[]{Michel Schanen*, Oana Marin, Hong Zhang, Mihai Anitescu}
+\subtitle{ICCS 2016, Workshop on Computational Optimization, Modelling \&
+Simulation}
+\institute[ANL/MCS]{MCS - Argonne National Laboratory}
+\date{June 7, 2016}
+
+\usepackage{epstopdf}
+\usepackage{tensor}
+\usepackage{listings}
+\lstset{ %
+language=c,                % choose the language of the code
+basicstyle=\ttfamily\small,         % the size of the fonts that are used for the code
+numbers=none,              % where to put the line-numbers
+numberstyle=\tiny,         % the size of the fonts that are used for the line-numbers
+stepnumber=1,                   % the step between two line-numbers. If it's 1 each line will be numbered
+numbersep=3pt,                  % how far the line-numbers are from the code
+backgroundcolor=\color{white!20},  % choose the background color. You must add \usepackage{color}
+showspaces=false,               % show spaces adding particular underscores
+showstringspaces=false,         % underline spaces within strings
+showtabs=false,                 % show tabs within strings adding particular underscores
+frame=,                    % adds a frame around the code
+tabsize=2,	                    % sets default tabsize to 2 spaces
+captionpos=t,                   % sets the caption-position to bottom
+breaklines=true,                % sets automatic line breaking
+breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+escapeinside={(*@}{@*)},        % if you want to add a comment within your code
+mathescape=true,                %
+linewidth=\linewidth,           %
+xleftmargin=0.3cm,              %
+morecomment=[l][keywordstyle2]{//},            %
+morecomment=[s]{/*}{*/},        %
+moredelim=**[is][\color{blue}]{^}{^},
+moredelim=**[is][\color{darkgreen}]{@}{@},
+moredelim=**[is][\color{red}]{|}{|}
+}
+\addtobeamertemplate{footnote}{}{ \vspace{2ex}}
+
+\newcommand{\Var}[1]{\mathrm{Var}\left \{ #1\right\}} % Variance
+\newcommand{\vol}[1] {\operatorname{vol}\left( #1 \right)}
+\newcommand{\E}[1]{\operatorname{\mathbb{E}}\left[ #1\right]} % Expected value
+\renewcommand{\P}[1]{\operatorname{\mathbb{P}}\left[ #1\right]} % Expected value
+\newcommand{\norm}[1]{\left\| {#1} \right\|}
+\newcommand{\argmax}{\operatornamewithlimits{arg\,max}}
+\newcommand{\argmin}{\operatornamewithlimits{arg\,min}}
+\newcommand{\jeffa}{\phantom{\sum_{i = 1}^{m}\tilde{f}\mathcal{N}(0,\sigma^2)}}
+\newtheorem{proposition}[theorem]{Proposition}
+\newcommand\Perms[2]{\tensor[_{#1}]P{_{#2}}}
+\newcommand{\minimize}{\operatornamewithlimits{minimize}}
+\newtheorem{assumption}[theorem]{Assumption}
+%\newcommand{\adj}[1]{{#1_{(1)}}}
+%\newcommand{\tlm}[1]{{#1^{(1)}}}
+\newcommand{\adj}[1]{\bar{#1}}
+\newcommand{\tlm}[1]{\dot{#1}}
+%\newcommand{\tlm}[1]{{#1^{(1)}}}
+% \setbeameroption{show notes}
+% \setbeameroption{show only notes}
+\newcommand{\mynode}[2]{%
+%\pspolygon(#1,#2)(#3,#4)(! 0.5 dup add #1 sub #2)(! #3 #2 dup add #4 sub)
+%\psframe(! 0.5 0.5 add #1 sub 1 1 add)(1 ,6)
+\psframe(! #1 0.5  sub #2 0.5 sub)(! #1 0.5  add #2 0.5 add)
+%\psline(! #1 0.5 sub #2)(! #1 0.5 add #2)
+%\rput(! #1 -0.25 #2 add){CPU}
+%\rput(! #1 0.25 #2 add){Mem.}
+}
+\usepackage{array}
+\newcolumntype{x}[1]{>{\centering\arraybackslash\hspace{0pt}}p{#1}}
+\setbeameroption{hide notes}
+
+\begin{document}
+\setbeamertemplate{footline}{}
+{
+\usebackgroundtemplate{\includegraphics[width=\paperwidth]{TitleANLBlue}}
+\frame{\titlepage}
+}
+
+% \setbeamertemplate{footline}[]{\insertframenumber of \inserttotalframenumber}
+\setbeamertemplate{footline}{
+  \begin{beamercolorbox}{footlinecolor}
+    \hfill
+    \begin{minipage}[c]{3cm}
+        \tiny{{\color{anlpresentationblue} \hfill \insertframenumber{} of \inserttotalframenumber} }
+    \end{minipage}      
+    \begin{minipage}[c]{10cm}
+       {\color{white} .}
+    \end{minipage}      
+   \end{beamercolorbox}
+}
+
+\include{content}
+\end{document}
+
