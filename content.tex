@@ -26,7 +26,7 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Motivation: Large Scale Adjoints}
+  \frametitle{Motivation: Large-Scale Adjoints}
 \begin{figure}
 \centering
 \scalebox{1}
@@ -47,11 +47,10 @@
 \end{figure}
   {\bf What is different on large-scale systems?}
   \begin{itemize}
-    \item Discrete versus continuous
-    \item Iterative solvers and accuracy
     \item Parallization: Read $\rightarrow$ write, write $\rightarrow$ read
     \item Implicit parallelism (e.g. OpenMP)
     \item Explicit parallelism (e.g. MPI)
+    \item \alert{Checkpointing}
   \end{itemize}
 \end{frame}
 
@@ -80,14 +79,15 @@
     \frametitle{Nek5000\footnote{\cite{nekmanual}, \url{http://nek5000.mcs.anl.gov/}}}
     \begin{itemize}
       \item Spectral Element Method (SEM) based CFD solver
-      \item solves incompressible Navier-Stokes
-      \item spectrally accurate (polynomial order of up to 20)
-      \item highly scalable: $10^{12}$ grid points scale up to $10^8$ processors
+      \item Solves incompressible Navier-Stokes
+      \item Spectrally accurate (polynomial order of up to 20)
+      \item Halo exchange has always same size independent of order
+      \item Highly scalable: $10^{12}$ grid points scale up to $10^8$ processors
     \end{itemize}
 \begin{figure}
   \centering
   \subfigure[Flow around fuel rods]{\includegraphics[width=0.45\textwidth]{./figures/nek_1}}
-  \subfigure[Flow in a straight pipe at $Re=1000$]{\includegraphics[width=0.45\textwidth]{./figures/nek_2.png}}
+  \subfigure[Flow in a straight pipe at $Re=1000$]{\includegraphics[width=0.45\textwidth]{./figures/nek_2}}
 \end{figure}
 \end{frame}
 
@@ -148,9 +148,9 @@
 \bar{\mathbf{u}}_{t}&=\bar{F}_t(\mathbf{u}_t,\bar{\mathbf{u}}_{t+1})
 \end{align*}
 \end{center}
-\begin{figure}[h]
+\begin{center}
   \begin{adjustbox}{width=\textwidth,keepaspectratio}
-    \begin{pspicture}(-1,-1)(19,1)
+    \begin{pspicture}(-1,-2.5)(19,1)
       \psline[arrowsize=5pt,linecolor=red]{->}(0,1.5)(0,0.5)
       \psline[arrowsize=5pt,linecolor=red]{->}(2,1.5)(2,0.5)
       \psline[arrowsize=5pt,linecolor=red]{->}(4,1.5)(4,0.5)
@@ -232,7 +232,7 @@
       \psline[arrowsize=5pt]{->}(18,-0.5)(18,-2.0)
     \end{pspicture}
   \end{adjustbox}
-\end{figure}
+\end{center}
 \begin{itemize}
   \item Most of checkpointing research in Algorithmic/Automatic Differentiation
     (AD)
@@ -247,7 +247,7 @@
     \item {\color{blue}Interpolation} of checkpoints
 \begin{figure}[h]
   \begin{adjustbox}{width=\textwidth,keepaspectratio}
-    \begin{pspicture}(-1,-1)(19,1)
+    \begin{pspicture}(-1,-2.5)(19,1)
       \psline[arrowsize=5pt,linecolor=red]{->}(0,1.5)(0,0.5)
       \psline[arrowsize=5pt,linecolor=red]{->}(8,1.5)(8,0.5)
       \psline[arrowsize=5pt,linecolor=red]{->}(16,1.5)(16,0.5)
@@ -468,7 +468,7 @@
   \frametitle{Assumptions applied to Mira}
   \begin{figure}
     \begin{adjustbox}{width=0.8\textwidth,keepaspectratio}
-      \begin{pspicture}(-1,-7)(19,2)
+      \begin{pspicture}(0,-1.15)(11,2)
         \rput[bl](0.15,1.6){Mira}
         \psframe(0,-1.15)(2,2)
         \psframe(0.15,-1)(1.15,1.5)
@@ -505,11 +505,11 @@
 \begin{frame}
   \frametitle{Algorithm in a Nutshell}
   \begin{itemize}
-    \item Number of disc checkpoints unlimited, memory checkpoints limited
-    \item Stride q for disc checkpoints is determined by disc bandwidth (store
+    \item Number of disk checkpoints unlimited, memory checkpoints limited
+    \item Stride q for disk checkpoints is determined by disk bandwidth (store
       as many as possible) during the forward run\\
   \begin{adjustbox}{width=\textwidth,keepaspectratio}
-    \begin{pspicture}(-1,-1)(31,1)
+    \begin{pspicture}(-1,-0.5)(31,2.5)
       \pscircle(0,0){0.5}
       \pscircle(2,0){0.5}
       \pscircle(4,0){0.5}
@@ -570,7 +570,7 @@
   \cite{revolve} in
   the adjoint run.\\
   \begin{adjustbox}{width=\textwidth,keepaspectratio}
-    \begin{pspicture}(-1,-0.5)(19,1)
+    \begin{pspicture}(-0.5,-1)(14.5,2)
       \pscircle(0,0){0.5}
       \pscircle(2,0){0.5}
       \pscircle(4,0){0.5}
@@ -604,7 +604,7 @@
       \psline[arrowsize=5pt,linearc=.25]{<-}(12.5,0)(13,-1)(13.5,0)
     \end{pspicture}
 
-    \begin{pspicture}(-1,-0.5)(19,1)
+    \begin{pspicture}(8,-1)(15.5,1.5)
       \pscircle(10,0){0.5}
       \pscircle(12,0){0.5}
 
@@ -621,8 +621,8 @@
   \end{adjustbox}
 %\end{center}
 %\begin{center}
-  \begin{adjustbox}{width=0.5\textwidth,keepaspectratio}
-    \begin{pspicture}(-1,-1)(19,1)
+  \begin{adjustbox}{width=0.7\textwidth,keepaspectratio}
+    \begin{pspicture}(5.5,-1)(11.5,1.5)
       \pscircle(6,0){0.5}
       \pscircle(8,0){0.5}
       \pscircle(10,0){0.5}
@@ -640,7 +640,7 @@
       \psline[arrowsize=5pt]{<-}(8.5,0)(9.5,0)
     \end{pspicture}
 
-    \begin{pspicture}(-1,-1)(19,1)
+    \begin{pspicture}(5,-1)(14,1.5)
       \pscircle(6,0){0.5}
       \pscircle(8,0){0.5}
 
@@ -657,8 +657,8 @@
   \end{adjustbox}
 %\end{center}
 %\begin{center}
-  \begin{adjustbox}{width=0.5\textwidth,keepaspectratio}
-    \begin{pspicture}(-1,-1)(19,1)
+  \begin{adjustbox}{width=0.8\textwidth,keepaspectratio}
+    \begin{pspicture}(-0.5,-1)(7.5,1.5)
       \pscircle(0,0){0.5}
       \pscircle(2,0){0.5}
       \pscircle(4,0){0.5}
@@ -679,7 +679,7 @@
       %\psline[arrowsize=5pt,linearc=.25]{<-}(4.5,0)(5,-1)(5.5,0)
       \psline[arrowsize=5pt]{<-}(4.5,0)(5.5,0)
     \end{pspicture}
-    \begin{pspicture}(-1,-1)(19,1)
+    \begin{pspicture}(1,-1)(5.5,1.5)
       \pscircle(2,0){0.5}
       \pscircle(4,0){0.5}
 
@@ -693,7 +693,7 @@
       %\psline[arrowsize=5pt,linearc=.25]{<-}(2.5,0)(3,-1)(3.5,0)
       \psline[arrowsize=5pt]{<-}(2.5,0)(3.5,0)
     \end{pspicture}
-    \begin{pspicture}(-1,-1)(19,1)
+    \begin{pspicture}(1,-1)(5,1.5)
       \pscircle(2,0){0.5}
       \pscircle(4,0){0.5}
 
@@ -709,6 +709,37 @@
     \end{pspicture}
   \end{adjustbox}
   \end{itemize}
+\end{frame}
+
+\begin{frame}
+
+  \frametitle{Use Case: Lid Driven Cavity}
+\begin{figure}
+  \centering
+  \subfigure[Primal]{\includegraphics[width=0.45\textwidth]{./figures/primal}}
+  \subfigure[Adjoint]{\includegraphics[width=0.45\textwidth]{./figures/dual}}
+  \label{fig:fd}
+\end{figure}
+  \begin{itemize}
+    \item Flexible use case that allows weak scaling 
+    \item Kinetic energy $E_k$ at final timestep $T$: $E_k=\frac{1}{2}<\mathbf{u}_T,
+      \mathbf{u}_T>$ with respect to inital
+      condition $\mathbf{u}_0$
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Validation}
+\begin{figure}
+  \centering
+  \subfigure[Adjoint]{\includegraphics[width=0.45\textwidth]{./figures/grad_adj}}
+  \subfigure[Finite difference]{\includegraphics[width=0.45\textwidth]{./figures/grad_fd_rescale}}
+  \caption{Validation of the gradient in $x$
+  direction computed of the energy $E_k$ at time step $t$ with respect to
+  velocity $\mathbf{u}$ at time step $t-1$ via adjoint and finite
+  difference in the 2d lid driven cavity.}
+  \label{fig:fd}
+\end{figure}
 \end{frame}
 
 \begin{frame}
@@ -737,7 +768,7 @@
     \includegraphics[width=0.8\textwidth]{./figures/revolve}
     %\caption{ The predicted ratio assumes that storing
     %and restoring checkpoints has no cost and one adjoint and primal solve for one
-    %time step have the same runtime. The seeming discontinuity in the
+    %time step have the same runtime. The seeming diskontinuity in the
     %predicted time marks the point at $\binom{s+2}{s}=\binom{52}{50}=1300$
     %mentioned in \alert{intro}. This point marks maximum reusage of the checkpoints and
     %thus also maximum memory access, hinting at the largest difference at this
@@ -779,24 +810,24 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Collaboration}
-  {\bf What you get:}
+  \frametitle{Final slide\ldots}
+ {\bf Summary}
   \begin{itemize}
-    \item Automatic Differentation, adjoint checkpointing schemes (tools and people)
-    \item A SEM CFD code that shows very good scaling
+    \item Asynchronous two-level checkpointing
+    \item Recomputation/memory trade-off
+    \item Implementing a high latency stack in HPC
+    \item Stretch out checkpoints all down the memory hierarchy
+    \item Performance model
+    \item Interface is hardware dependent
   \end{itemize}
-  {\bf What we need:}
-  \begin{itemize}
-    \item Code that runs at large-scale
-    \item Different architectures
-    \item Adjoint and checkpointing scheme challenges
-  \end{itemize}
-  {\bf Outlook}
-  \begin{itemize}
-    \item Lossy compression in CFD (for adjoints)
-    \item Noise in I/O to archive
-    \item Adjoints on exascale machines (amount of RAM wrt. FLOPS)
-  \end{itemize}
+  
+  {\bf Open questions/Outlook}
+ \begin{itemize}
+   \item Generic nonlinear adjoint model for Nek5000
+   \item Lossy and lossless compression
+   \item Include synchronous disk in checkpointing, PETSc implementation
+   \item Noise in I/O to archive
+ \end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -810,20 +841,6 @@
 \bibliography{presentation}
 \end{frame}
 
-
-\begin{frame}
-  \frametitle{Validation}
-\begin{figure}
-  \centering
-  \subfigure[Adjoint]{\includegraphics[width=0.45\textwidth]{./figures/grad_adj.png}}
-  \subfigure[Finite difference]{\includegraphics[width=0.45\textwidth]{./figures/grad_fd_rescale.png}}
-  \caption{Validation of the gradient in $x$
-  direction computed of the energy $E_k$ at time step $t$ with respect to
-  velocity $\mathbf{u}$ at time step $t-1$ via adjoint and finite
-  difference in the 2d lid driven cavity.}
-  \label{fig:fd}
-\end{figure}
-\end{frame}
 
 \begin{frame}
   \frametitle{Stride Sizes at Various Problem Sizes}
@@ -851,25 +868,4 @@
 \end{table}
 \end{frame}
 
-\begin{frame}
-
-  \frametitle{Use Case: Lid Driven Cavity}
-  \begin{itemize}
-    \item Flexible use case that allows weak scaling \footnote{Provided by
-      Schlatter et al., KTH,
-      Stockholm}.
-    \item Kinetic energy at final timestep $E_k=\frac{1}{2}<\mathbf{u}_T,
-      \mathbf{u}_T>$ with respect to inital
-      condition $\mathbf{u}_0$.
-  \end{itemize}
-  \begin{center}
-    \begin{tabular}{cc}
-      {\Large \bf Primal} & {\Large \bf Dual} \\
-      %\movie[poster,width=4cm, height=3cm,showcontrols]{}{./videos/primal.mpg}
-      &
-      %\movie[poster,width=4cm,height=3cm,showcontrols]{}{./videos/dual_nonlinear_adj_4000.mpg}
-      \\
-    \end{tabular}
-  \end{center}
-\end{frame}
 
